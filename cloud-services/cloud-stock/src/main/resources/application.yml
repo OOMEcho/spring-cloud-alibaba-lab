@@ -1,0 +1,38 @@
+server:
+  port: ${SERVER_PORT:8104}
+spring:
+  config:
+    import: classpath:config/seata.yml
+  datasource:
+    url: jdbc:mysql://${DB_HOST:127.0.0.1}:${DB_PORT:3306}/${DB_SCHEMA:cloud_stock}?serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    hikari:
+      maximum-pool-size: 8
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+  jackson:
+    deserialization:
+      fail-on-unknown-properties: true
+  application:
+    name: cloud-stock
+  profiles:
+    default: nacos
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: never
+logging:
+  pattern:
+    level: '%5p [${spring.application.name},%X{requestId:-}]'
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+  global-config:
+    banner: false

@@ -1,0 +1,5 @@
+# 在 Nacos 创建同名 Data ID，Group 使用 LAB_GROUP，格式选 YAML。
+lab:
+  message: 订单服务已读取 Nacos 配置
+  order:
+    max-quantity: 10

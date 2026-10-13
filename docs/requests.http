@@ -1,0 +1,100 @@
+### IDEA HTTP Client：完整业务环境，所有请求默认走网关。
+### 使用前修改请求号；重复提交同一请求号是幂等实验，会保留原购买参数与快照。
+@gateway = http://localhost:8100
+@order = http://localhost:8102
+@localNo = order-local-demo-0001
+@globalNo = order-global-demo-0001
+@eventId = replace-with-event-id
+
+### 正常用户；200，响应有 X-Request-Id / X-Service-Instance
+GET {{gateway}}/api/users/1
+X-Request-Id: manual-user-check
+
+### 不存在用户；404
+GET {{gateway}}/api/users/999
+
+### 商品展示，数据库或 Redis 缓存
+GET {{gateway}}/api/products/1001
+
+### 库存快照
+GET {{gateway}}/api/stocks/1001
+
+### 正常预览；不生成订单或扣库存
+POST {{gateway}}/api/orders/preview
+Content-Type: application/json
+
+{"userId":1,"productId":1001,"quantity":2}
+
+### 禁用用户；409
+POST {{gateway}}/api/orders/preview
+Content-Type: application/json
+
+{"userId":2,"productId":1001,"quantity":2}
+
+### 数量非法；400
+POST {{gateway}}/api/orders/preview
+Content-Type: application/json
+
+{"userId":1,"productId":1001,"quantity":0}
+
+### LOCAL 下单；重复提交后核对只扣一次库存
+POST {{gateway}}/api/orders
+Content-Type: application/json
+X-Request-Id: manual-local-order
+
+{"requestNo":"{{localNo}}","userId":1,"productId":1001,"quantity":2}
+
+### 查询原订单
+GET {{gateway}}/api/orders/{{localNo}}
+
+### LOCAL 结果未知时原号重试；不更换购买参数，不重新报价
+POST {{gateway}}/api/orders/{{localNo}}/retry
+
+### 同号不同数量；409
+POST {{gateway}}/api/orders
+Content-Type: application/json
+
+{"requestNo":"{{localNo}}","userId":1,"productId":1001,"quantity":3}
+
+### GLOBAL 下单；需先启用订单、库存的 Seata
+POST {{gateway}}/api/orders/atomic
+Content-Type: application/json
+X-Request-Id: manual-global-order
+
+{"requestNo":"{{globalNo}}","userId":1,"productId":1001,"quantity":1}
+
+### 查询 GLOBAL 原号，检查 transactionMode / globalXid
+GET {{gateway}}/api/orders/{{globalNo}}
+
+### LOCAL 请求号不得混用 GLOBAL；409
+POST {{gateway}}/api/orders/atomic
+Content-Type: application/json
+
+{"requestNo":"{{localNo}}","userId":1,"productId":1001,"quantity":2}
+
+### 查询确认事件；把返回的事件 ID 填到文件顶部 eventId
+GET {{gateway}}/api/orders/events/by-order/{{localNo}}
+
+### 查询通知；SENT 不保证消费已完成，允许等待异步处理后再查
+GET {{gateway}}/api/notifications/orders/{{localNo}}
+
+### 人工重试失败事件；先替换 eventId 并确认事件状态
+POST {{gateway}}/api/orders/events/{{eventId}}/retry
+
+### 人工重放一条死信；仅在修复原因后执行，成功投递仍需查询通知
+POST {{gateway}}/api/notifications/dead-letters/replay-one
+
+### 商品更新；先查询当前 version 并填写，重复旧版本应返回409
+PUT {{gateway}}/api/products/1001
+Content-Type: application/json
+
+{"name":"学习笔记本","price":39.90,"enabled":true,"version":0}
+
+### 业务配置刷新；此端点直接访问订单服务，不经网关
+GET {{order}}/learning/config
+
+### 订单 OpenAPI
+GET {{order}}/v3/api-docs
+
+### 服务健康检查
+GET {{order}}/actuator/health

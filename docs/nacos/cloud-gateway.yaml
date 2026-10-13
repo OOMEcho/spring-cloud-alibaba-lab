@@ -1,0 +1,4 @@
+# Data ID: cloud-gateway.yaml，Group: LAB_GROUP，格式: YAML。
+# 路由定义由独立 JSON Data ID cloud-gateway-routes.json 管理，支持运行中更新。
+lab:
+  service-description: 业务网关

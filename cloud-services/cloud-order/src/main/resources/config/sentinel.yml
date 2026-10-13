@@ -1,0 +1,26 @@
+# 规则以 Nacos JSON 为准；Dashboard 默认修改客户端内存，不会回写 Nacos。
+# 沿用业务 Nacos 地址、命名空间、Group 与鉴权，public 命名空间保持空值。
+spring:
+  cloud:
+    sentinel:
+      datasource:
+        order-flow:
+          nacos:
+            server-addr: ${NACOS_SERVER_ADDR:127.0.0.1:8848}
+            namespace: ${NACOS_NAMESPACE:}
+            group-id: ${NACOS_GROUP:LAB_GROUP}
+            username: ${NACOS_USERNAME:}
+            password: ${NACOS_PASSWORD:}
+            data-id: cloud-order-flow.json
+            data-type: json
+            rule-type: flow
+        user-degrade:
+          nacos:
+            server-addr: ${NACOS_SERVER_ADDR:127.0.0.1:8848}
+            namespace: ${NACOS_NAMESPACE:}
+            group-id: ${NACOS_GROUP:LAB_GROUP}
+            username: ${NACOS_USERNAME:}
+            password: ${NACOS_PASSWORD:}
+            data-id: cloud-order-degrade.json
+            data-type: json
+            rule-type: degrade

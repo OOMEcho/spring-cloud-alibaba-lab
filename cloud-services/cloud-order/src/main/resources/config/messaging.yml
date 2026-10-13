@@ -1,0 +1,33 @@
+spring:
+  rabbitmq:
+    host: ${RABBIT_HOST:127.0.0.1}
+    port: ${RABBIT_PORT:5672}
+    username: ${RABBIT_USERNAME:guest}
+    password: ${RABBIT_PASSWORD:guest}
+    virtual-host: ${RABBIT_VHOST:/cloud-lab}
+    connection-timeout: 2s
+    publisher-confirm-type: correlated
+    publisher-returns: true
+    template:
+      mandatory: true
+    listener:
+      simple:
+        # AUTO 是容器在方法成功返回后执行协议 ACK，不是 RabbitMQ autoAck=true。
+        acknowledge-mode: auto
+        default-requeue-rejected: false
+        prefetch: 8
+        retry:
+          enabled: true
+          max-attempts: 3
+          initial-interval: 500ms
+          multiplier: 2
+          max-interval: 2s
+lab:
+  messaging:
+    enabled: ${MESSAGING_ENABLED:true}
+    exchange: ${ORDER_EVENT_EXCHANGE:cloud.lab.order.events.v1}
+    queue: ${ORDER_EVENT_QUEUE:cloud.lab.notification.order-confirmed.v1}
+    dead-exchange: ${ORDER_EVENT_DEAD_EXCHANGE:cloud.lab.order.events.dlx.v1}
+    dead-queue: ${ORDER_EVENT_DEAD_QUEUE:cloud.lab.notification.order-confirmed.dlq.v1}
+    routing-key: order.confirmed.v1
+    dead-routing-key: order.confirmed.dead.v1

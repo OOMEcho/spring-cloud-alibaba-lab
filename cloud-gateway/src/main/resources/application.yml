@@ -1,0 +1,26 @@
+server:
+  port: ${SERVER_PORT:8100}
+spring:
+  application:
+    name: cloud-gateway
+  profiles:
+    default: nacos
+  cloud:
+    gateway:
+      server:
+        webflux:
+          httpclient:
+            connect-timeout: 1200
+            response-timeout: 5s
+    loadbalancer:
+      # 故障不自动重试，避免未来写请求发生重复执行。
+      retry:
+        enabled: false
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: never

@@ -1,0 +1,74 @@
+server:
+  port: ${SERVER_PORT:8102}
+spring:
+  config:
+    import:
+      - classpath:config/messaging.yml
+      - classpath:config/seata.yml
+      - classpath:config/sentinel.yml
+  datasource:
+    url: jdbc:mysql://${DB_HOST:127.0.0.1}:${DB_PORT:3306}/${DB_SCHEMA:cloud_order}?serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    hikari:
+      maximum-pool-size: 8
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+  application:
+    name: cloud-order
+  profiles:
+    # 默认接入真实 Nacos，使用必需的远程配置。
+    default: nacos
+  cloud:
+    sentinel:
+      eager: true
+      web-context-unify: false
+      transport:
+        dashboard: ${SENTINEL_DASHBOARD:127.0.0.1:8858}
+        port: ${SENTINEL_CLIENT_PORT:8719}
+        # 必须为 Dashboard 可达的数字 IP，留空时 SDK 自动选择；不接受域名。
+        client-ip: ${SENTINEL_CLIENT_IP:}
+    openfeign:
+      client:
+        config:
+          productClient:
+            connectTimeout: 1200
+            readTimeout: 2500
+          stockClient:
+            # 写请求不自动重试；由订单幂等键和明确的重试入口确认结果。
+            connectTimeout: 1200
+            readTimeout: 2500
+          userClient:
+            # contextId 对应的超时配置；连接与读取分别限定，默认不自动重试。
+            connectTimeout: 1200
+            readTimeout: 2500
+            loggerLevel: basic
+  jackson:
+    deserialization:
+      fail-on-unknown-properties: true
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: never
+springdoc:
+  swagger-ui:
+    tags-sorter: alpha
+    operations-sorter: alpha
+logging:
+  pattern:
+    level: '%5p [${spring.application.name},%X{requestId:-}]'
+lab:
+  message: 本地默认配置
+  order:
+    max-quantity: 10
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+  global-config:
+    banner: false

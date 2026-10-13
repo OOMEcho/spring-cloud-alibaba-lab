@@ -1,0 +1,14 @@
+Spring Cloud Alibaba Lab
+Copyright 2026 xuesong.lei
+
+This project includes a modified database initialization script from Apache Seata:
+sql/seata/01-server-schema.sql
+Source: https://github.com/apache/incubator-seata/blob/v2.5.0/script/server/db/mysql.sql
+
+The applicable upstream attribution notice is retained below:
+
+Apache Seata (Incubating)
+Copyright 2023-2025 The Apache Software Foundation
+
+This product includes software developed at
+The Apache Software Foundation (http://www.apache.org/).

@@ -1,0 +1,43 @@
+# Seata 2.5.0 TC；使用专用存储库，不与订单/库存的 undo_log 混用。
+server:
+  port: ${SEATA_PORT:18091}
+spring:
+  application:
+    name: cloud-lab-seata
+  main:
+    web-application-type: none
+logging:
+  config: classpath:logback-spring.xml
+  file:
+    path: /seata-server/logs
+seata:
+  config:
+    type: file
+  registry:
+    type: nacos
+    nacos:
+      application: ${SEATA_NACOS_APPLICATION:seata-server}
+      # TC 在容器内使用 Compose 服务名，宿主机客户端使用 Nacos 映射端口。
+      server-addr: nacos:8848
+      namespace: ${SEATA_NACOS_NAMESPACE:}
+      group: ${SEATA_NACOS_GROUP:SEATA_GROUP}
+      cluster: ${SEATA_NACOS_CLUSTER:default}
+      username: ${NACOS_USERNAME:}
+      password: ${NACOS_PASSWORD:}
+  server:
+    service-port: ${SEATA_PORT:18091}
+  store:
+    mode: db
+    session:
+      mode: db
+    lock:
+      mode: db
+    db:
+      datasource: druid
+      db-type: mysql
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql://mysql:3306/cloud_seata?useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true
+      user: cloud_seata
+      password: ${SEATA_DB_PASSWORD}
+      min-conn: 2
+      max-conn: 10

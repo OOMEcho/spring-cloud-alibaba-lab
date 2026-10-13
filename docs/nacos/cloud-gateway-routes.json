@@ -1,0 +1,7 @@
+[
+  { "id": "user-service", "path": "/api/users/**", "uri": "lb://cloud-user" },
+  { "id": "order-service", "path": "/api/orders/**", "uri": "lb://cloud-order" },
+  { "id": "product-service", "path": "/api/products/**", "uri": "lb://cloud-product" },
+  { "id": "stock-service", "path": "/api/stocks/**", "uri": "lb://cloud-stock" },
+  { "id": "notification-service", "path": "/api/notifications/**", "uri": "lb://cloud-notification" }
+]

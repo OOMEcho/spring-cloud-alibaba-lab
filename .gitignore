@@ -1,0 +1,13 @@
+**/target/
+.idea/
+*.iml
+.DS_Store
+.env
+.env.*
+!.env.example
+!.env.compose.example
+logs/
+.runtime/
+*.log
+
+

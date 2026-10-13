@@ -1,0 +1,23 @@
+spring:
+  config:
+    # 必需配置导入；Nacos 不可用或 Data ID 缺失时不静默退回离线运行。
+    import:
+      - "nacos:${spring.application.name}.yaml?group=${NACOS_GROUP:LAB_GROUP}&refreshEnabled=true"
+  cloud:
+    nacos:
+      discovery:
+        server-addr: ${NACOS_SERVER_ADDR:127.0.0.1:8848}
+        namespace: ${NACOS_NAMESPACE:}
+        group: ${NACOS_GROUP:LAB_GROUP}
+        # 服务端启用客户端鉴权时填写凭据；未启用时保持空值。
+        username: ${NACOS_USERNAME:}
+        password: ${NACOS_PASSWORD:}
+        # 多网卡场景可明确填写服务注册 IP，留空时由客户端选择。
+        ip: ${SERVICE_IP:}
+      config:
+        server-addr: ${NACOS_SERVER_ADDR:127.0.0.1:8848}
+        namespace: ${NACOS_NAMESPACE:}
+        group: ${NACOS_GROUP:LAB_GROUP}
+        # 服务端启用客户端鉴权时填写凭据；未启用时保持空值。
+        username: ${NACOS_USERNAME:}
+        password: ${NACOS_PASSWORD:}

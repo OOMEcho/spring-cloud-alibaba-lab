@@ -1,0 +1,31 @@
+# 仅订单与库存接入 Seata AT。
+seata:
+  enabled: ${SEATA_ENABLED:false}
+  application-id: ${spring.application.name}
+  tx-service-group: lab_tx_group
+  # 先用原始数据源完成 Flyway，再创建唯一的 AT 代理，避免首次启动缺 undo_log。
+  enable-auto-data-source-proxy: false
+  data-source-proxy-mode: AT
+  config:
+    type: file
+  registry:
+    # 通过 Nacos 发现 TC；TC 注册组与业务服务 LAB_GROUP 相互独立。
+    type: nacos
+    nacos:
+      application: ${SEATA_NACOS_APPLICATION:seata-server}
+      server-addr: ${NACOS_SERVER_ADDR:127.0.0.1:8848}
+      namespace: ${SEATA_NACOS_NAMESPACE:}
+      group: ${SEATA_NACOS_GROUP:SEATA_GROUP}
+      username: ${NACOS_USERNAME:}
+      password: ${NACOS_PASSWORD:}
+  service:
+    vgroup-mapping:
+      # 映射值必须与 TC 注册时的 cluster 一致。
+      lab_tx_group: ${SEATA_NACOS_CLUSTER:default}
+  client:
+    rm:
+      report-success-enable: true
+    tm:
+      default-global-transaction-timeout: 30000
+    undo:
+      log-serialization: jackson

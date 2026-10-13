@@ -1,0 +1,11 @@
+[
+  {
+    "resource": "order:preview",
+    "limitApp": "default",
+    "grade": 1,
+    "count": 20,
+    "strategy": 0,
+    "controlBehavior": 0,
+    "clusterMode": false
+  }
+]
