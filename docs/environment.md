@@ -111,6 +111,12 @@ Compose 中 TC 使用 `nacos:8848` 注册，宿主机客户端使用映射后的
 
 Compose 读取 `.env.compose` 用于配置替换，再通过各服务的 `environment` 传入容器。容器内的中间件地址使用服务名（例如 Seata 连接 `mysql:3306`），宿主机 Java 使用映射后的地址。
 
+## Flyway 历史脚本
+
+已执行的 `resources/db/migration/V*.sql` 保持原文件内容，包括空格、缩进和注释；IDEA 自动格式化也可能改变 Flyway 校验值。后续表结构调整新增版本脚本，不修改历史版本。
+
+遇到 `Migration checksum mismatch` 时先比较实际脚本与数据库迁移记录；确认只是格式变化后恢复原文件。不要用关闭校验或自动 `repair` 掩盖未核实的结构差异。恢复后重新构建，确保运行目录中的 SQL 资源同步更新。
+
 ## 验证范围
 
 2026-10-13：独立项目名、全新数据卷、鉴权开启的 Compose 已完成镜像构建、首次初始化、六服务启动、LOCAL / GLOBAL 幂等下单、通知消费、库存不足回滚及中间件重启保留数据。Seata TC 通过 Nacos 公布宿主机 IP 与匹配端口，订单返回的 XID 与该独立 TC 一致。
