@@ -1,6 +1,7 @@
 package cn.oomecho.cloud.user;
 
 import cn.oomecho.cloud.common.core.runtime.SdkRuntimeDirectories;
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.system.ApplicationHome;
@@ -12,6 +13,7 @@ import org.springframework.boot.system.ApplicationHome;
  * @since 2026-10-12
  */
 @SpringBootApplication
+@MapperScan("cn.oomecho.cloud.user.mapper")
 public class UserApplication {
     /**
      * 启动用户服务。

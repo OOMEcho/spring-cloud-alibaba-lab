@@ -4,6 +4,7 @@ import cn.oomecho.cloud.api.product.client.ProductClient;
 import cn.oomecho.cloud.api.stock.client.StockClient;
 import cn.oomecho.cloud.api.user.client.UserClient;
 import cn.oomecho.cloud.common.core.runtime.SdkRuntimeDirectories;
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.system.ApplicationHome;
@@ -16,6 +17,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
  * @since 2026-10-12
  */
 @SpringBootApplication
+@MapperScan("cn.oomecho.cloud.order.mapper")
 @EnableFeignClients(clients = {UserClient.class, ProductClient.class, StockClient.class})
 public class OrderApplication {
     /**

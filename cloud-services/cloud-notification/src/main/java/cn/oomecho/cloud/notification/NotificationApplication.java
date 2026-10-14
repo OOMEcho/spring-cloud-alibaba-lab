@@ -1,6 +1,7 @@
 package cn.oomecho.cloud.notification;
 
 import cn.oomecho.cloud.common.core.runtime.SdkRuntimeDirectories;
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.system.ApplicationHome;
@@ -12,6 +13,7 @@ import org.springframework.boot.system.ApplicationHome;
  * @since 2026-10-13
  */
 @SpringBootApplication
+@MapperScan("cn.oomecho.cloud.notification.mapper")
 public class NotificationApplication {
     /**
      * @param args 启动参数
