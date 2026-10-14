@@ -206,6 +206,12 @@ Gateway 从 `cloud-gateway-routes.json` 读取路由；同一业务命名空间�
 
 ## 接口文档与调用示例
 
+统一入口：[localhost:8100/swagger-ui/index.html](http://localhost:8100/swagger-ui/index.html)。通过页面顶部下拉菜单切换五个服务，在线调试统一调用网关的 `/api` 业务路径。
+
+网关通过固定 GET 路由 `/docs/user`、`/docs/order`、`/docs/product`、`/docs/stock`、`/docs/notification` 获取各服务的 `/v3/api-docs`，仅展示对应的公开业务路径。该入口保留各服务独立文档，不将它们合并成一份 OpenAPI JSON；目标服务未启动时，对应文档不可用，其他服务仍可独立查看。
+
+各服务独立文档地址如下，便于直接调试服务内部接口：
+
 | 服务 | Swagger UI |
 | --- | --- |
 | 用户 | [localhost:8101/swagger-ui/index.html](http://localhost:8101/swagger-ui/index.html) |
@@ -214,7 +220,7 @@ Gateway 从 `cloud-gateway-routes.json` 读取路由；同一业务命名空间�
 | 库存 | [localhost:8104/swagger-ui/index.html](http://localhost:8104/swagger-ui/index.html) |
 | 通知 | [localhost:8105/swagger-ui/index.html](http://localhost:8105/swagger-ui/index.html) |
 
-各业务服务通过 `/v3/api-docs` 提供 OpenAPI JSON。Gateway 对外提供以下业务路由，转发时移除 `/api` 前缀；Swagger、Actuator 和 `/internal/**` 不通过网关暴露。
+各业务服务通过 `/v3/api-docs` 提供 OpenAPI JSON。Gateway 对外提供以下业务路由，转发时移除 `/api` 前缀；服务自身的 Swagger 页面、Actuator 和 `/internal/**` 不通过业务路由暴露。统一文档页面由网关提供，文档转发与动态业务路由独立配置。
 
 | 方法与网关路径 | 用途 |
 | --- | --- |

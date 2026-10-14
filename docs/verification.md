@@ -1,6 +1,6 @@
 # 接口验证说明
 
-启动步骤见 [README](../README.md#启动指南)。使用各服务 Swagger 或 [requests.http](requests.http) 调用接口，结合数据库记录和 `X-Request-Id` 对应日志核对结果。
+启动步骤见 [README](../README.md#启动指南)。优先使用 [网关统一 Swagger](http://localhost:8100/swagger-ui/index.html)，按服务切换后通过 `/api` 调试；也可使用各服务独立 Swagger 或 [requests.http](requests.http)。结合数据库记录和 `X-Request-Id` 对应日志核对结果。
 
 ## 基础验证清单
 
@@ -36,5 +36,9 @@
 在项目根目录使用 Java 21 执行 `mvn clean package`，完成编译与打包。业务行为按上述清单实际调用验证，构建成功不代表故障场景已通过。
 
 各阶段文档的验收记录描述对应时间的联调结果。2026-10-13 已完成独立 Compose 全新数据卷初始化、六服务启动、LOCAL / GLOBAL 幂等下单、真实消息消费、库存不足回滚以及中间件重启保留数据。Sentinel Nacos 规则加载、热更新、订单重启恢复和真实熔断恢复已验收；Gateway 动态更新、错误配置保留、重启加载和并发切换通过，详见 [动态路由说明](dynamic-routing.md)。
+
+2026-10-14 已验收网关统一接口文档：五个服务的文档与页面切换正常，聚合路径不包含 `/internal/**`、`/learning/**` 或 Actuator，GLOBAL 下单与死信重放接口在相应功能启用时正常展示。浏览器执行用户查询，实际请求为网关 `/api/users/1`，返回成功。停止库存服务后，其文档返回 503，用户文档仍可加载；未知文档地址、非 GET 文档请求与内部路径返回 404。
+
+本次文档验收使用临时端口与独立 Nacos 分组，关闭 Flyway 迁移、Outbox 定时投递和消息消费，不重新执行下单或消息业务验收；结束后停止临时服务并删除测试分组配置。
 
 停止 Java 服务时仍观察到 Nacos 3.0.3 客户端关闭阶段的 `NotifyCenter.INSTANCE` 空指针日志。本次启动、配置推送、路由及业务请求通过，关闭异常尚未修复。

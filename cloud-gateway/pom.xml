@@ -34,6 +34,10 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webflux-ui</artifactId>
+        </dependency>
     </dependencies>
     <profiles>
         <!-- Apple Silicon 使用匹配的 Netty 原生 DNS 解析器，其他平台不加载此依赖。 -->

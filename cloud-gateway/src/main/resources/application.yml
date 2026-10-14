@@ -24,3 +24,20 @@ management:
   endpoint:
     health:
       show-details: never
+springdoc:
+  swagger-ui:
+    disable-swagger-default-url: true
+    urls:
+      - name: 用户服务
+        url: /docs/user
+      - name: 订单服务
+        url: /docs/order
+      - name: 商品服务
+        url: /docs/product
+      - name: 库存服务
+        url: /docs/stock
+      - name: 通知服务
+        url: /docs/notification
+    urls-primary-name: 用户服务
+    tags-sorter: alpha
+    operations-sorter: alpha
