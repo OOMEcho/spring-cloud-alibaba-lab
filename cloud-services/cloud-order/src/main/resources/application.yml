@@ -35,6 +35,11 @@ spring:
           productClient:
             connectTimeout: 1200
             readTimeout: 2500
+          productDisplayClient:
+            # 展示信息可以降级；报价客户端保持独立，不能使用展示降级数据下单。
+            connectTimeout: 1200
+            readTimeout: 2500
+            loggerLevel: basic
           stockClient:
             # 写请求不自动重试；由订单幂等键和明确的重试入口确认结果。
             connectTimeout: 1200

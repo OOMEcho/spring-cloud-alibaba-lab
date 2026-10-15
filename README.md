@@ -8,7 +8,7 @@ Spring Cloud Alibaba Lab 是一个围绕下单场景构建的微服务学习与�
 
 当前已实现 P1～P5，主要能力包括：
 
-- **服务治理**：Nacos 注册发现与配置刷新、OpenFeign 服务调用、Gateway 统一入口与动态路由、Sentinel 限流与熔断及 Nacos 规则持久化。
+- **服务治理**：Nacos 注册发现与配置刷新、OpenFeign 服务调用及消费者展示降级、Gateway 统一入口与动态路由、Sentinel 限流与熔断及 Nacos 规则持久化。
 - **订单与库存**：服务端报价、订单幂等、条件扣减防超卖，以及结果未知时沿原订单号查询和重试。
 - **商品缓存**：Redis 展示缓存、更新后失效和故障时回退数据库；下单报价直接查询数据库。
 - **异步通知**：事务发件箱、RabbitMQ 发布确认、消费幂等、有限重试、死信队列与人工重放。
@@ -112,7 +112,7 @@ flowchart LR
     Stock -. 分支事务 .-> Seata
 ```
 
-Nacos 为网关与业务服务提供注册发现和配置管理；Sentinel 保护订单预览入口及用户远程查询。各数据服务拥有独立 MySQL 逻辑库，图中重点展示订单事件链路。
+Nacos 为网关与业务服务提供注册发现和配置管理；Sentinel 保护订单预览入口、用户远程查询及订单侧商品展示调用。各数据服务拥有独立 MySQL 逻辑库，图中重点展示订单事件链路。
 
 ### 两种下单方式
 
@@ -226,6 +226,7 @@ Gateway 从 `cloud-gateway-routes.json` 读取路由；同一业务命名空间�
 | --- | --- |
 | `GET /api/users/{id}` | 查询用户 |
 | `GET /api/products/{id}`、`PUT /api/products/{id}` | 商品展示、按版本更新 |
+| `GET /api/orders/products/{id}/display` | 可选展示信息；故障时明确降级，不用于下单报价 |
 | `GET /api/stocks/{id}` | 查询库存 |
 | `POST /api/orders/preview` | 订单预览 |
 | `POST /api/orders` | LOCAL 本地下单 |
@@ -256,6 +257,8 @@ curl -X POST http://localhost:8100/api/orders \
 ## 接口验证与可选实验
 
 服务启动后，使用 Swagger 或 [requests.http](docs/requests.http) 查询用户、商品与库存，执行订单预览、LOCAL / GLOBAL 下单、原号重复提交及通知查询。结合接口响应、数据库记录和日志核对结果，操作清单见 [接口验证说明](docs/verification.md)。
+
+Feign 故障与降级的调用链、回退原因及手工实验见 [学习说明](docs/feign-fallback.md)。已有环境需更新 Nacos 中的 `cloud-order-degrade.json`，新增商品展示资源规则；初始化任务不会覆盖已有 Data ID。
 
 需要深入学习配置推送、限流熔断、消息故障和事务回滚时，再阅读 P1～P5 阶段文档；这些实验不属于启动项目的前置步骤。涉及故障注入时使用单独的实验资源。
 

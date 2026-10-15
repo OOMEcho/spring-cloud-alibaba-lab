@@ -16,6 +16,13 @@ GET {{gateway}}/api/users/999
 ### 商品展示，数据库或 Redis 缓存
 GET {{gateway}}/api/products/1001
 
+### 订单侧可选商品展示；故障时 200 且 degraded=true，价格与上架状态为空
+GET {{gateway}}/api/orders/products/1001/display
+X-Request-Id: manual-feign-display
+
+### 不存在商品；404，不返回降级成功
+GET {{gateway}}/api/orders/products/999999/display
+
 ### 库存快照
 GET {{gateway}}/api/stocks/1001
 

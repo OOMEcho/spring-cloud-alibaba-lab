@@ -6,5 +6,13 @@
     "timeWindow": 10,
     "minRequestAmount": 5,
     "statIntervalMs": 10000
+  },
+  {
+    "resource": "GET:http://cloud-product/products/{id}",
+    "grade": 1,
+    "count": 0.5,
+    "timeWindow": 10,
+    "minRequestAmount": 5,
+    "statIntervalMs": 10000
   }
 ]
